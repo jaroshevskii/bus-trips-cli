@@ -1,0 +1,28 @@
+{
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": [
+        "swift"
+      ],
+      "name": "Debug bustrips",
+      "program": "${workspaceFolder:bus-trips-cli}/.build/debug/bustrips",
+      "args": [],
+      "cwd": "${workspaceFolder:bus-trips-cli}",
+      "preLaunchTask": "swift: Build Debug bustrips"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": [
+        "swift"
+      ],
+      "name": "Release bustrips",
+      "program": "${workspaceFolder:bus-trips-cli}/.build/release/bustrips",
+      "args": [],
+      "cwd": "${workspaceFolder:bus-trips-cli}",
+      "preLaunchTask": "swift: Build Release bustrips"
+    }
+  ]
+}

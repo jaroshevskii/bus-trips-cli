@@ -1,3 +1,3 @@
 # 🚍 BusTrips CLI
 
-A command line application for managing bus trips.
+A command-line application for managing bus trips.

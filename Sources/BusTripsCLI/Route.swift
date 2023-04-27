@@ -2,9 +2,7 @@
 // BusTrips CLI
 //
 
-/// A structure that represents a route.
-///
-/// The route contains departure and arrival points.
+/// A type represents a route that contains departure and arrival points.
 struct Route {
   /// The departure point of the route.
   let departure: String

@@ -4,7 +4,7 @@
 
 /// A structure that represents a route.
 ///
-/// `Route` contains the point of departure and arrival.
+/// The route contains departure and arrival points.
 struct Route {
   /// The departure point of the route.
   let departure: String

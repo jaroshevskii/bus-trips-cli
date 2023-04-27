@@ -6,7 +6,7 @@
 struct Route {
   /// The departure point of the route.
   let departure: String
-
+  
   /// The arrival point of the route.
   let arrival: String
 

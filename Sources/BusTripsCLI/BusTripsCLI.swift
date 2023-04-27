@@ -10,7 +10,7 @@ struct BusTripsCLI: ParsableCommand {
     commandName: "bustrips",
     abstract: "A command line tool for managing bus trips.",
     version: "X.X.X",
-    subcommands: [AddTrip.self]
+    subcommands: [AddBusTrip.self]
   )
 
   func run() {

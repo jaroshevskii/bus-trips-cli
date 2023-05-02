@@ -17,11 +17,11 @@ struct AddBusTrip: ParsableCommand {
   @Option(help: "The date of departure of the bus trip. (format: \(Trip.dateFormat))")
   var date: String
 
-  // @Option(help: "The number of seats available for booking.")
-  // var seatCount: Int
+  @Option(parsing: .unconditional, help: "Number of bus seats available for booking.")
+  var seatCount: Int
 
-  // @Option(help: "The ticket price is for one seat.")
-  // var price: Double
+  @Option(parsing: .unconditional, help: "The price of a bus ticket.")
+  var price: Double
 
   func validate() throws {
     do {
@@ -42,9 +42,25 @@ struct AddBusTrip: ParsableCommand {
     guard date > .now else {
       throw ValidationError("The departure date must be in the future.")
     }
+
+    guard seatCount >= 1 else {
+      throw ValidationError("There must be at least one free seat.")
+    }
+
+    guard price >= 0 else {
+      throw ValidationError("The ticket price cannot be negative.")
+    }
   }
 
   func run() {
-    print(route)
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = Trip.dateFormat
+    let busTrip = Trip(
+      route: try! Route(route),
+      dateOfDeparture: dateFormatter.date(from: date)!,
+      availableSeatCount: seatCount,
+      ticketPrice: price
+    )
+    print(busTrip)
   }
 }

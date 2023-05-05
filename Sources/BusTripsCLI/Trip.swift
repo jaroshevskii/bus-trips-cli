@@ -5,7 +5,7 @@
 import Foundation
 
 /// A type that represents a trip.
-struct Trip {
+struct Trip: Codable {
   /// The route of the trip.
   var route: Route
   /// The date of departure of the bus trip.

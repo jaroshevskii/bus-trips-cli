@@ -52,15 +52,45 @@ struct AddBusTrip: ParsableCommand {
     }
   }
 
-  func run() {
+  func run() throws {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = Trip.dateFormat
+
     let busTrip = Trip(
       route: try! Route(route),
       dateOfDeparture: dateFormatter.date(from: date)!,
       availableSeatCount: seatCount,
       ticketPrice: price
     )
-    print(busTrip)
+
+    // print(busTrip)
+
+
+    let fileManager = FileManager.default
+    let desktopURL = fileManager.urls(for: .desktopDirectory, in: .userDomainMask).first!
+    let filePath = desktopURL.appendingPathComponent("BusTrip.json")
+    let fileExists = fileManager.fileExists(atPath: filePath.path)
+    var busTrips: [Trip] = []
+
+    if fileExists {
+      // File exists, so read the contents and decode the array
+      let data = try Data(contentsOf: filePath)
+      let decoder = JSONDecoder()
+      busTrips = try decoder.decode([Trip].self, from: data)
+    }
+
+    busTrips.append(busTrip)
+
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = .prettyPrinted
+    
+    // let encodedBusTrip = try encoder.encode([busTrip])
+    // print(String(data: encodedBusTrip, encoding: .utf8)!)
+    // print(encodedBusTrip)
+
+    let jsonData = try encoder.encode(busTrips)
+    let desktopPath = FileManager.default.urls(for: .desktopDirectory, in: .userDomainMask).first!
+    let fileURL = desktopPath.appendingPathComponent("BusTrip.json")
+    try jsonData.write(to: fileURL)
   }
 }

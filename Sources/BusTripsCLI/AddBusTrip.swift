@@ -53,44 +53,51 @@ struct AddBusTrip: ParsableCommand {
   }
 
   func run() throws {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = Trip.dateFormat
+    guard let desktopURL = FileManager.default.urls(for: .desktopDirectory, in: .userDomainMask).first else {
+      throw AddBusTripError.desktopDirectoryPathNotFound
+    }
+    let fileURL = desktopURL.appendingPathComponent("BusTrips.json")
 
-    let busTrip = Trip(
+    var busTrips = [String: Set<Trip>]()
+
+    if FileManager.default.fileExists(atPath: fileURL.path) {
+      let data = try Data(contentsOf: fileURL)
+      let decoder = JSONDecoder()
+      busTrips = try decoder.decode([String: Set<Trip>].self, from: data)
+    }
+    
+    let formatter = DateFormatter()
+    formatter.dateFormat = Trip.dateFormat
+
+    let newTrip = Trip(
       route: try! Route(route),
-      dateOfDeparture: dateFormatter.date(from: date)!,
+      dateOfDeparture: formatter.date(from: date)!,
       availableSeatCount: seatCount,
       ticketPrice: price
     )
 
-    // print(busTrip)
-
-
-    let fileManager = FileManager.default
-    let desktopURL = fileManager.urls(for: .desktopDirectory, in: .userDomainMask).first!
-    let filePath = desktopURL.appendingPathComponent("BusTrip.json")
-    let fileExists = fileManager.fileExists(atPath: filePath.path)
-    var busTrips: [Trip] = []
-
-    if fileExists {
-      // File exists, so read the contents and decode the array
-      let data = try Data(contentsOf: filePath)
-      let decoder = JSONDecoder()
-      busTrips = try decoder.decode([Trip].self, from: data)
-    }
-
-    busTrips.append(busTrip)
+    busTrips["avalible", default: []].insert(newTrip)
 
     let encoder = JSONEncoder()
     encoder.outputFormatting = .prettyPrinted
-    
-    // let encodedBusTrip = try encoder.encode([busTrip])
-    // print(String(data: encodedBusTrip, encoding: .utf8)!)
-    // print(encodedBusTrip)
 
-    let jsonData = try encoder.encode(busTrips)
-    let desktopPath = FileManager.default.urls(for: .desktopDirectory, in: .userDomainMask).first!
-    let fileURL = desktopPath.appendingPathComponent("BusTrip.json")
-    try jsonData.write(to: fileURL)
+    let data = try encoder.encode(busTrips)
+    try data.write(to: fileURL)
+
+    print(String(data: data, encoding: .utf8)!)
+  }
+}
+
+/// An error that can be thrown when working with `AddBusTrip`.
+enum AddBusTripError: Error {
+  case desktopDirectoryPathNotFound
+}
+
+extension AddBusTripError: LocalizedError {
+  var errorDescription: String? {
+    switch self {
+    case .desktopDirectoryPathNotFound:
+      return "Can't find the path to the desktop directory."
+    }
   }
 }

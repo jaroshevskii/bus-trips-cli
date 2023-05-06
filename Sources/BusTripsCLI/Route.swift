@@ -3,7 +3,7 @@
 //
 
 /// A type represents a route that contains departure and arrival points.
-struct Route: Codable {
+struct Route: Codable, Equatable, Hashable {
   /// The departure point of the route.
   let departure: String
   

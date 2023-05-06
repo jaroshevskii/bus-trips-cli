@@ -24,6 +24,13 @@ struct AddBusTrip: ParsableCommand {
   var price: Double
 
   func validate() throws {
+    try validateRoute()
+    try validateDate()
+    try validateSeatCount()
+    try validatePrice()
+  }
+
+  func validateRoute() throws {
     do {
       _ = try Route(route)
     } catch RouteError.emptyField {
@@ -33,20 +40,27 @@ struct AddBusTrip: ParsableCommand {
     } catch RouteError.invalidFormat {
       throw ValidationError("The route must contain departure and arrival points separated by '\(Route.separator)'.")
     }
+  }
 
+  func validateDate() throws {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = Trip.dateFormat
+
     guard let date = dateFormatter.date(from: date) else {
       throw ValidationError("The date should be in the format '\(Trip.dateFormat)'.")
     }
     guard date > .now else {
       throw ValidationError("The departure date must be in the future.")
     }
+  }
 
+  func validateSeatCount() throws {
     guard seatCount >= 1 else {
       throw ValidationError("There must be at least one free seat.")
     }
+  }
 
+  func validatePrice() throws {
     guard price >= 0 else {
       throw ValidationError("The ticket price cannot be negative.")
     }

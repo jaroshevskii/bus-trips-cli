@@ -28,8 +28,7 @@ struct Route: Codable, Hashable {
   init(departure: String, arrival: String) throws {
     if departure.isEmpty || arrival.isEmpty {
       throw RouteError.emptyField
-    }
-    if departure == arrival {
+    } else if departure == arrival {
       throw RouteError.sameDepartureAndArrival
     }
     self.departure = departure

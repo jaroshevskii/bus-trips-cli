@@ -10,13 +10,6 @@ struct BusTripsCLI: ParsableCommand {
     commandName: "bustrips",
     abstract: "A command line tool for managing bus trips.",
     version: "X.X.X",
-    subcommands: [AddBusTrip.self]
+    subcommands: [AddBusTrip.self, ViewAvalibleBusTrips.self]
   )
-
-  func run() {
-    print("""
-      BusTrips \
-      CLI
-      """)
-  }
 }

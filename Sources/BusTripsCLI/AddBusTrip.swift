@@ -98,7 +98,7 @@ struct AddBusTrip: ParsableCommand {
     let data = try encoder.encode(busTrips)
     try data.write(to: fileURL)
 
-    print(String(data: data, encoding: .utf8)!)
+    print("New trip added successfully to '\(fileURL.path)' file.")
   }
 }
 

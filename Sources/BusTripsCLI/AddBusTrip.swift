@@ -18,10 +18,10 @@ struct AddBusTrip: ParsableCommand {
   var date: String
 
   @Option(parsing: .unconditional, help: "Number of bus seats available for booking.")
-  var seatCount: Int
+  var seatCount: Int = 1
 
   @Option(parsing: .unconditional, help: "The price of a bus ticket.")
-  var price: Double
+  var price: Double = 0
 
   func validate() throws {
     try validateRoute()
@@ -90,7 +90,7 @@ struct AddBusTrip: ParsableCommand {
       ticketPrice: price
     )
 
-    busTrips["avalible", default: []].insert(newTrip)
+    busTrips["available", default: []].insert(newTrip)
 
     let encoder = JSONEncoder()
     encoder.outputFormatting = .prettyPrinted

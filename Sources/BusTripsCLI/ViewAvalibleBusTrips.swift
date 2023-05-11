@@ -5,7 +5,7 @@
 import Foundation
 import ArgumentParser
 
-struct ViewAvalibleBusTrips: ParsableCommand {
+struct ViewAvailableBusTrips: ParsableCommand {
   static var configuration = CommandConfiguration(
     commandName: "view",
     abstract: "View the list of available trips."
@@ -47,8 +47,8 @@ struct ViewAvalibleBusTrips: ParsableCommand {
     let fileURL = desktopURL.appendingPathComponent("BusTrips.json")
     guard fileManager.fileExists(atPath: fileURL.path),
       let busTrips = readBusTrips(from: fileURL),
-      let avalibleTrips = busTrips["avalible"],
-      !avalibleTrips.isEmpty else {
+      let availableTrips = busTrips["available"],
+      !availableTrips.isEmpty else {
       print("""
       Note: There are no trips available.
       Tip:  You can add a new trip by running the 'bustrips add' command.
@@ -56,32 +56,33 @@ struct ViewAvalibleBusTrips: ParsableCommand {
       return
     }
 
-    var filteredAvalibleTrips = avalibleTrips
+    var filteredAvailableTrips = availableTrips
 
     if let departure = departure {
-      filteredAvalibleTrips = filteredAvalibleTrips.filter { $0.route.departure == departure }
+      filteredAvailableTrips = filteredAvailableTrips.filter { $0.route.departure == departure }
     }
     if let arrival = arrival {
-      filteredAvalibleTrips = filteredAvalibleTrips.filter { $0.route.arrival == arrival }
+      filteredAvailableTrips = filteredAvailableTrips.filter { $0.route.arrival == arrival }
     }
 
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = Trip.dateFormat
 
     if let date = date {
-      filteredAvalibleTrips = filteredAvalibleTrips.filter {
+      filteredAvailableTrips = filteredAvailableTrips.filter {
         $0.dateOfDeparture == dateFormatter.date(from: date)
       }
     }
 
-    print("Avalible bus trips:")
-    for trip in filteredAvalibleTrips {
+    print("Available bus trips:")
+    for trip in filteredAvailableTrips {
       let formatedDate = dateFormatter.string(from: trip.dateOfDeparture)
+      let formatedPrice = trip.ticketPrice.isZero ? "free" : "$" + String(format: "%g", trip.ticketPrice)
       print("""
-        Route:               \(trip.route.description)
-        Date of departure:   \(formatedDate)
-        Avalible seat count: \(trip.availableSeatCount)
-        Tiket price:         $\(String(format: "%g", trip.ticketPrice))
+        Route:                \(trip.route.description)
+        Date of departure:    \(formatedDate)
+        Available seat count: \(trip.availableSeatCount)
+        Tiket price:          \(formatedPrice)
 
       """)
     }

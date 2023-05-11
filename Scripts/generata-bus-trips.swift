@@ -15,6 +15,7 @@ struct Trip: Codable {
   let dateOfDeparture: TimeInterval
   let route: Route
   let availableSeatCount: Int
+  var tickets: [Int] = []
 }
 
 let numTrips = Int(CommandLine.arguments[1])!

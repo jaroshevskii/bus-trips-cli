@@ -17,4 +17,6 @@ struct Trip: Codable, Hashable {
 
   /// Date format in string representation.
   static let dateFormat = "yyyy-MM-dd HH:mm"
+
+  var tickets = [Int]()
 }

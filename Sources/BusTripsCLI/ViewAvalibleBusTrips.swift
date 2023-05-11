@@ -20,6 +20,8 @@ struct ViewAvailableBusTrips: ParsableCommand {
   @Option(help: "Filter by date.")
   var date: String?
 
+  @Flag var bought = false
+
   func validate() throws {
     if let departure = departure, departure.isEmpty {
       throw ValidationError("The departure point cannot be empty.")
@@ -74,17 +76,32 @@ struct ViewAvailableBusTrips: ParsableCommand {
       }
     }
 
-    print("Available bus trips:")
+    if bought {
+      print("Bought bustrips:")
+    } else {
+      print("Available bus trips:")
+    }
     for trip in filteredAvailableTrips {
+      if trip.tickets.isEmpty { continue }
       let formatedDate = dateFormatter.string(from: trip.dateOfDeparture)
       let formatedPrice = trip.ticketPrice.isZero ? "free" : "$" + String(format: "%g", trip.ticketPrice)
-      print("""
-        Route:                \(trip.route.description)
-        Date of departure:    \(formatedDate)
-        Available seat count: \(trip.availableSeatCount)
-        Tiket price:          \(formatedPrice)
+      if bought {
+        print("  \(trip.route.description), \(formatedDate)")
+        for seatCount in trip.tickets {
+          let price = Double(seatCount) * trip.ticketPrice
+          let formatedPrice = price.isZero ? "free" : "$" + String(format: "%g", price)
+          print("    \(seatCount) - \(formatedPrice)")
+        }
+        print()
+      } else {
+        print("""
+          Route:                \(trip.route.description)
+          Date of departure:    \(formatedDate)
+          Available seat count: \(trip.availableSeatCount)
+          Tiket price:          \(formatedPrice)
 
-      """)
+        """)
+      }
     }
   }
 
